@@ -39,6 +39,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.company.matt.popularmovies.MainActivity" />
         </activity>
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".data.MovieProvider"
+            android:exported="false"
+            android:syncable="true" />
     </application>
-
 </manifest>

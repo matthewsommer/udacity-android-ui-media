@@ -21,4 +21,7 @@
 
     <!-- Value in SharedPreferences for rating [CHAR LIMIT=NONE] -->
     <string name="pref_sort_order_rating" translatable="false">rating</string>
+
+    <!-- SyncAdapter related -->
+    <string name="content_authority">com.company.matt.popularmovies</string>
 </resources>
