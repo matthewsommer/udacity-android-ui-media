@@ -15,9 +15,6 @@ import android.util.Log;
 import com.company.matt.popularmovies.data.MovieContract.MovieEntry;
 import com.company.matt.popularmovies.data.MovieDbHelper;
 
-/**
- * Created by Matt on 6/15/16.
- */
 public class TestProvider extends AndroidTestCase {
 
     public static final String LOG_TAG = TestProvider.class.getSimpleName();
@@ -125,13 +122,13 @@ public class TestProvider extends AndroidTestCase {
     public void testDeleteRecords() {
         testInsertReadProvider();
 
-        TestUtilities.TestContentObserver weatherObserver = TestUtilities.getTestContentObserver();
-        mContext.getContentResolver().registerContentObserver(MovieEntry.CONTENT_URI, true, weatherObserver);
+        TestUtilities.TestContentObserver movieObserver = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(MovieEntry.CONTENT_URI, true, movieObserver);
 
         deleteAllRecordsFromProvider();
 
-        weatherObserver.waitForNotificationOrFail();
+        movieObserver.waitForNotificationOrFail();
 
-        mContext.getContentResolver().unregisterContentObserver(weatherObserver);
+        mContext.getContentResolver().unregisterContentObserver(movieObserver);
     }
 }

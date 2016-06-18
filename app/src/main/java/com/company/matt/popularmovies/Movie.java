@@ -10,6 +10,7 @@ public class Movie implements Parcelable {
     String poster_path;
     String vote_average;
     String overview;
+    String synopsis;
 
     public Movie(String id,
                  String original_title,
@@ -56,5 +57,29 @@ public class Movie implements Parcelable {
         poster_path = in.readString();
         vote_average = in.readString();
         overview = in.readString();
+    }
+
+    public String getOriginal_title() {
+        return original_title;
+    }
+
+    public String getRelease_date() {
+        return release_date;
+    }
+
+    public String getPoster_path() {
+        return poster_path;
+    }
+
+    public String getVote_average() {
+        return vote_average;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getId() {
+        return id;
     }
 }

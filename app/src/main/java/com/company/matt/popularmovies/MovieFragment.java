@@ -2,18 +2,28 @@ package com.company.matt.popularmovies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListView;
+
+import com.company.matt.popularmovies.data.MovieContract;
+import com.company.matt.popularmovies.sync.MovieSyncAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,9 +37,30 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieFragment extends Fragment {
-
+public class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    public static final String LOG_TAG = MovieFragment.class.getSimpleName();
     private MovieAdapter mMovieAdapter;
+
+    private GridView mGridView;
+    private int mPosition = ListView.INVALID_POSITION;
+
+    private static final String SELECTED_KEY = "selected_position";
+
+    private static final int MOVIE_LOADER = 0;
+
+    private static final String[] MOVIE_COLUMNS = {
+            MovieContract.MovieEntry._ID,
+            MovieContract.MovieEntry.COLUMN_TITLE,
+            MovieContract.MovieEntry.COLUMN_POSTER
+    };
+
+    static final int COL_MOVIE_ID = 0;
+    static final int COL_TITLE = 1;
+    static final int COL_POSTER = 2;
+
+    public interface Callback {
+        public void onItemSelected(Uri idUri);
+    }
 
     public MovieFragment() {
     }
@@ -42,176 +73,72 @@ public class MovieFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mMovieAdapter = new MovieAdapter(getActivity(), new ArrayList<Movie>());
+        //updateMovies();
+
+        mMovieAdapter = new MovieAdapter(getActivity(), null, 0);
+
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movie);
         gridview.setAdapter(mMovieAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Movie movie = mMovieAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(), MovieDetailActivity.class)
-                        .putExtra("Movie", movie);
-                startActivity(intent);
+                Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+                if (cursor != null) {
+                    ((Callback) getActivity())
+                            .onItemSelected(MovieContract.MovieEntry.buildMovie());
+                }
+                mPosition = position;
             }
         });
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
+            mPosition = savedInstanceState.getInt(SELECTED_KEY);
+        }
 
         return rootView;
     }
 
     private void updateMovies() {
-        FetchMoviesTask moviesTask = new FetchMoviesTask();
-        moviesTask.execute();
+        MovieSyncAdapter.syncImmediately(getActivity());
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
+    public void onSaveInstanceState(Bundle outState) {
+        if (mPosition != ListView.INVALID_POSITION) {
+            outState.putInt(SELECTED_KEY, mPosition);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        updateMovies();
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        Uri movieUri = MovieContract.MovieEntry.buildMovie();
+
+        return new CursorLoader(getActivity(),
+                movieUri,
+                MOVIE_COLUMNS,
+                null,
+                null,
+                null);
     }
 
-    public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
-
-        private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
-
-        private List<Movie> getMovieDataFromJson(String moviesJsonStr)
-                throws JSONException {
-
-            final String MDB_RESULTS = "results";
-            final String MDB_ID = "id";
-            final String MDB_ORIGINAL_TITLE = "original_title";
-            final String MDB_RELEASE_DATE = "release_date";
-            final String MDB_POSTER_PATH = "poster_path";
-            final String MDB_VOTE_AVG = "vote_average";
-            final String MDB_OVERVIEW = "overview";
-
-            JSONObject moviesJson = new JSONObject(moviesJsonStr);
-            JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);
-
-            List<Movie> movies = new ArrayList<Movie>();
-
-            for(int i = 0; i < moviesArray.length(); i++) {
-                String id;
-                String original_title;
-                String release_date;
-                String poster_path;
-                String vote_average;
-                String overview;
-
-                JSONObject movieObject = moviesArray.getJSONObject(i);
-
-                Movie movie = new Movie(movieObject.getString(MDB_ID),
-                        movieObject.getString(MDB_ORIGINAL_TITLE),
-                        movieObject.getString(MDB_RELEASE_DATE),
-                        movieObject.getString(MDB_POSTER_PATH),
-                        movieObject.getString(MDB_VOTE_AVG),
-                        movieObject.getString(MDB_OVERVIEW));
-
-                movies.add(movie);
-            }
-            return movies;
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mMovieAdapter.swapCursor(data);
+        if (mPosition != ListView.INVALID_POSITION) {
+            // If we don't need to restart the loader, and there's a desired position to restore
+            // to, do so now.
+            mGridView.smoothScrollToPosition(mPosition);
         }
+    }
 
-        @Override
-        protected List<Movie> doInBackground(Void... params) {
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-
-            String JsonResponseStr = null;
-            Uri builtUri = null;
-
-            final String APPID_PARAM = "api_key";
-
-            try {
-                final String MDB_BASE_URL =
-                        "http://api.themoviedb.org/3/movie";
-                final String MDB_POPULAR = "popular";
-                final String MDB_TOP_RATED = "top_rated";
-
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String sortValue = preferences.getString("sort", "");
-
-                if(sortValue.equalsIgnoreCase("popularity")) {
-                    builtUri = Uri.parse(MDB_BASE_URL).buildUpon()
-                            .appendPath(MDB_POPULAR)
-                            .appendQueryParameter(APPID_PARAM, BuildConfig.MOVIE_DB_API_KEY)
-                            .build();
-                }
-                else if (sortValue.equalsIgnoreCase("rating")) {
-                    builtUri = Uri.parse(MDB_BASE_URL).buildUpon()
-                            .appendPath(MDB_TOP_RATED)
-                            .appendQueryParameter(APPID_PARAM, BuildConfig.MOVIE_DB_API_KEY)
-                            .build();
-                }
-                else {
-                    Log.e("Error ", "Sort preference not set properly");
-                    return null;
-                }
-
-                URL url = new URL(builtUri.toString());
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-                JsonResponseStr = buffer.toString();
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
-            }
-
-            try {
-                return getMovieDataFromJson(JsonResponseStr);
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(List<Movie>  result) {
-            if (result != null) {
-                mMovieAdapter.clear();
-                for(Movie movie : result) {
-                    mMovieAdapter.add(movie);
-                }
-            }
-        }
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMovieAdapter.swapCursor(null);
     }
 }

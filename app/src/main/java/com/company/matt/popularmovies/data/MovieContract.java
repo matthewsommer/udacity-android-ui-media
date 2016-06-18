@@ -6,6 +6,11 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.format.Time;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 public class MovieContract {
 
     public static final String CONTENT_AUTHORITY = "com.company.matt.popularmovies";
@@ -14,11 +19,21 @@ public class MovieContract {
 
     public static final String PATH_MOVIE = "movie";
 
-    public static long normalizeDate(long startDate) {
-        Time time = new Time();
-        time.set(startDate);
-        int julianDay = Time.getJulianDay(startDate, time.gmtoff);
-        return time.setJulianDay(julianDay);
+    public static long normalizeDate(String dateStr) {
+        final String iso8601DatePattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ";
+        final DateFormat iso8601DateFormat = new SimpleDateFormat(iso8601DatePattern);
+        final TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");
+        iso8601DateFormat.setTimeZone(utcTimeZone);
+        Date date = null;
+
+        try {
+            date = iso8601DateFormat.parse(dateStr);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return date.getTime();
     }
 
     /* Inner class that defines the table contents of the movie table */
@@ -37,14 +52,15 @@ public class MovieContract {
         // Movie id as returned by API
         public static final String COLUMN_MOVIE_ID = "movie_id";
 
-        public static final String COLUMN_MOVIE_TITLE = "title";
+        public static final String COLUMN_TITLE = "title";
 
         // Date, stored as long in milliseconds since the epoch
         public static final String COLUMN_RELEASE_DATE = "release_date";
 
-        public static final String COLUMN_MOVIE_POSTER = "poster";
-        public static final String COLUMN_MOVIE_VOTE_AVG = "vote_avg";
-        public static final String COLUMN_MOVIE_SYNOPSIS = "synopsis";
+        public static final String COLUMN_POSTER = "poster";
+        public static final String COLUMN_VOTE_AVG = "vote_avg";
+        public static final String COLUMN_SYNOPSIS = "synopsis";
+        public static final String COLUMN_FAVORITE = "favorite";
 
         public static Uri buildMovieUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

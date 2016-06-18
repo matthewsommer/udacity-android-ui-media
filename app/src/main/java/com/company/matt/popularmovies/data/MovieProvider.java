@@ -115,8 +115,10 @@ public class MovieProvider extends ContentProvider {
 
     private void normalizeDate(ContentValues values) {
         if (values.containsKey(MovieContract.MovieEntry.COLUMN_RELEASE_DATE)) {
-            long dateValue = values.getAsLong(MovieContract.MovieEntry.COLUMN_RELEASE_DATE);
-            values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, MovieContract.normalizeDate(dateValue));
+            String dateStr = values.getAsString(MovieContract.MovieEntry.COLUMN_RELEASE_DATE);
+            if(!dateStr.isEmpty()) {
+                //values.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, MovieContract.normalizeDate(dateStr));
+            }
         }
     }
 

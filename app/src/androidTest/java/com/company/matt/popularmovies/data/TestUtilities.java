@@ -1,10 +1,8 @@
 package com.company.matt.popularmovies.data;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -15,9 +13,6 @@ import com.company.matt.popularmovies.utils.PollingCheck;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Created by Matt on 6/15/16.
- */
 public class TestUtilities extends AndroidTestCase {
     static final String TEST_LOCATION = "90291";
     static final long TEST_DATE = 1419033600L;  // December 20th, 2014
@@ -44,11 +39,12 @@ public class TestUtilities extends AndroidTestCase {
     static ContentValues createMovieValues() {
         ContentValues movieValues = new ContentValues();
         movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID, 47389);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TITLE, "We are Spinal Tap");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_TITLE, "We are Spinal Tap");
         movieValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, TEST_DATE);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER, "/movie/poster/url");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_AVG, 1.1);
-        movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_SYNOPSIS, "Rock band movie");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER, "/movie/poster/url");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVG, 1.1);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_SYNOPSIS, "Rock band movie");
+        movieValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, 0);
 
         return movieValues;
     }
