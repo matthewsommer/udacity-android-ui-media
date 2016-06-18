@@ -14,6 +14,7 @@ public class MovieProvider extends ContentProvider {
     private MovieDbHelper mOpenHelper;
 
     static final int MOVIE = 100;
+    static final int MOVIE_WITH_ID = 101;
 
     private static final SQLiteQueryBuilder sMovieQueryBuilder;
 
@@ -22,10 +23,31 @@ public class MovieProvider extends ContentProvider {
         sMovieQueryBuilder.setTables(MovieContract.MovieEntry.TABLE_NAME);
     }
 
+    private static final String sId =
+            MovieContract.MovieEntry._ID + " = ?";
+
+    private Cursor getById(
+            Uri uri, String[] projection, String sortOrder) {
+        String movieId = MovieContract.MovieEntry.getMovieIdFromUri(uri);
+
+        String selection = sId;
+        String[] selectionArgs = new String[]{movieId};
+
+        return sMovieQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = MovieContract.CONTENT_AUTHORITY;
         matcher.addURI(authority, MovieContract.PATH_MOVIE, MOVIE);
+        matcher.addURI(authority, MovieContract.PATH_MOVIE + "/*", MOVIE_WITH_ID);
         return matcher;
     }
 
@@ -51,6 +73,11 @@ public class MovieProvider extends ContentProvider {
                         String sortOrder) {
         Cursor retCursor;
         switch (sUriMatcher.match(uri)) {
+            // "movie/*"
+            case MOVIE_WITH_ID: {
+                retCursor = getById(uri, projection, sortOrder);
+                break;
+            }
             case MOVIE: {
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         MovieContract.MovieEntry.TABLE_NAME,

@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ListView;
 
 import com.company.matt.popularmovies.data.MovieContract;
 import com.company.matt.popularmovies.sync.MovieSyncAdapter;
@@ -42,7 +41,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     private MovieAdapter mMovieAdapter;
 
     private GridView mGridView;
-    private int mPosition = ListView.INVALID_POSITION;
+    private int mPosition = GridView.INVALID_POSITION;
 
     private static final String SELECTED_KEY = "selected_position";
 
@@ -80,19 +79,22 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        GridView gridview = (GridView) rootView.findViewById(R.id.gridview_movie);
-        gridview.setAdapter(mMovieAdapter);
+        mGridView = (GridView) rootView.findViewById(R.id.gridview_movie);
+        mGridView.setAdapter(mMovieAdapter);
 
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
                     ((Callback) getActivity())
-                            .onItemSelected(MovieContract.MovieEntry.buildMovie());
+                            .onItemSelected(MovieContract.MovieEntry.buildMovieWithId(cursor.getString(COL_MOVIE_ID)));
+
+//                    ((Callback) getActivity())
+//                            .onItemSelected(MovieContract.MovieEntry.buildMovie());
                 }
-                mPosition = position;
+                    mPosition = position;
             }
         });
 
@@ -103,22 +105,27 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         return rootView;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
     private void updateMovies() {
         MovieSyncAdapter.syncImmediately(getActivity());
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (mPosition != ListView.INVALID_POSITION) {
+        super.onSaveInstanceState(outState);
+        if (mPosition != GridView.INVALID_POSITION) {
             outState.putInt(SELECTED_KEY, mPosition);
         }
-        super.onSaveInstanceState(outState);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         Uri movieUri = MovieContract.MovieEntry.buildMovie();
-
         return new CursorLoader(getActivity(),
                 movieUri,
                 MOVIE_COLUMNS,
@@ -130,9 +137,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mMovieAdapter.swapCursor(data);
-        if (mPosition != ListView.INVALID_POSITION) {
-            // If we don't need to restart the loader, and there's a desired position to restore
-            // to, do so now.
+        if (mPosition != GridView.INVALID_POSITION) {
             mGridView.smoothScrollToPosition(mPosition);
         }
     }

@@ -16,10 +16,6 @@ import java.util.List;
 public class MovieAdapter extends CursorAdapter {
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
-    private static final int VIEW_TYPE_COUNT = 2;
-    private static final int VIEW_TYPE_TODAY = 0;
-    private static final int VIEW_TYPE_FUTURE_DAY = 1;
-
     public static class ViewHolder {
         public final ImageView iconView;
 
@@ -50,10 +46,5 @@ public class MovieAdapter extends CursorAdapter {
                 .getString(MovieFragment.COL_POSTER)).into(viewHolder.iconView);
 
         viewHolder.iconView.setContentDescription(cursor.getString(MovieFragment.COL_TITLE));
-    }
-
-    @Override
-    public int getViewTypeCount() {
-        return VIEW_TYPE_COUNT;
     }
 }

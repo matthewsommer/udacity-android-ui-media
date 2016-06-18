@@ -10,6 +10,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,7 +36,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final int DETAIL_LOADER = 0;
 
     private static final String[] DETAIL_COLUMNS = {
-            MovieEntry.TABLE_NAME + "." + MovieEntry._ID,
+            MovieEntry._ID,
+            MovieEntry.COLUMN_MOVIE_ID,
             MovieEntry.COLUMN_TITLE,
             MovieEntry.COLUMN_RELEASE_DATE,
             MovieEntry.COLUMN_POSTER,
@@ -43,12 +45,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             MovieEntry.COLUMN_SYNOPSIS
     };
 
-    public static final int COL_MOVIE_ID = 0;
-    public static final int COL_TITLE = 1;
-    public static final int COL_RELEASE_DATE = 2;
-    public static final int COL_POSTER = 3;
-    public static final int COL_VOTE_AVG = 4;
-    public static final int COL_SYNOPSIS = 5;
+    public static final int COL_ID = 0;
+    public static final int COL_MOVIE_ID = 1;
+    public static final int COL_TITLE = 2;
+    public static final int COL_RELEASE_DATE = 3;
+    public static final int COL_POSTER = 4;
+    public static final int COL_VOTE_AVG = 5;
+    public static final int COL_SYNOPSIS = 6;
 
     private ImageView mIconView;
     private TextView mTitleView;
@@ -70,11 +73,12 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        mIconView = (ImageView) rootView.findViewById(R.id.detail_icon);
+        mIconView = (ImageView) rootView.findViewById(R.id.list_item_icon);
         mTitleView = (TextView) rootView.findViewById(R.id.detail_title_textview);
         mReleaseDateView = (TextView) rootView.findViewById(R.id.detail_release_date);
         mVoteAvgView = (TextView) rootView.findViewById(R.id.detail_vote_average);
         mSynopsisView = (TextView) rootView.findViewById(R.id.detail_synopsis);
+
         return rootView;
     }
 
@@ -126,8 +130,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d("onLoadFinished", Integer.toString(data.getCount()));
         if (data != null && data.moveToFirst()) {
-            int movieId = data.getInt(COL_MOVIE_ID);
+            int movieId = data.getInt(COL_ID);
             long release_date = data.getLong(COL_RELEASE_DATE);
             String titleText = data.getString(COL_TITLE);
             mTitleView.setText(titleText);

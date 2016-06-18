@@ -91,6 +91,28 @@ public class TestProvider extends AndroidTestCase {
         TestUtilities.validateCursor("testBasicMovieQuery", movieCursor, movieValues);
     }
 
+    public void testBasicMovieWithIDQuery() {
+        MovieDbHelper dbHelper = new MovieDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues movieValues = TestUtilities.createMovieValues();
+
+        long movieRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, movieValues);
+        assertTrue("Unable to Insert MovieEntry into the Database", movieRowId != -1);
+
+        db.close();
+
+        Cursor movieCursor = mContext.getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        TestUtilities.validateCursor("testBasicMovieQuery", movieCursor, movieValues);
+    }
+
     public void testInsertReadProvider() {
         TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
 
