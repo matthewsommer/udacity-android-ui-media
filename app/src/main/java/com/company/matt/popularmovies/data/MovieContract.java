@@ -4,8 +4,6 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
-import android.text.format.Time;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,17 +58,18 @@ public class MovieContract {
         public static final String COLUMN_POSTER = "poster";
         public static final String COLUMN_VOTE_AVG = "vote_avg";
         public static final String COLUMN_SYNOPSIS = "synopsis";
-        public static final String COLUMN_FAVORITE = "favorite";
+        public static final String COLUMN_CATEGORY = "category";
 
         public static Uri buildMovieUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildMovie() { return CONTENT_URI.buildUpon().build();}
-
+        //TODO: This is a duplicate of buildMovieUri
         public static Uri buildMovieWithId(String id) {
             return CONTENT_URI.buildUpon().appendPath(id).build();
         }
+
+        public static Uri buildMovie() { return CONTENT_URI.buildUpon().build();}
 
         public static String getMovieIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);

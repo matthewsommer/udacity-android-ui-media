@@ -44,7 +44,7 @@ public class TestUtilities extends AndroidTestCase {
         movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER, "/movie/poster/url");
         movieValues.put(MovieContract.MovieEntry.COLUMN_VOTE_AVG, 1.1);
         movieValues.put(MovieContract.MovieEntry.COLUMN_SYNOPSIS, "Rock band movie");
-        movieValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, 0);
+        movieValues.put(MovieContract.MovieEntry.COLUMN_CATEGORY, "top_rated");
 
         return movieValues;
     }

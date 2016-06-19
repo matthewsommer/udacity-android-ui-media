@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.company.matt.popularmovies.data.MovieContract;
 import com.company.matt.popularmovies.data.MovieContract.MovieEntry;
+import com.squareup.picasso.Picasso;
 
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
@@ -32,6 +33,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private ShareActionProvider mShareActionProvider;
     private String mMovies;
     private Uri mUri;
+
+    public String firstMovieId = "42";
 
     private static final int DETAIL_LOADER = 0;
 
@@ -73,7 +76,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        mIconView = (ImageView) rootView.findViewById(R.id.list_item_icon);
+        mIconView = (ImageView) rootView.findViewById(R.id.detail_icon);
         mTitleView = (TextView) rootView.findViewById(R.id.detail_title_textview);
         mReleaseDateView = (TextView) rootView.findViewById(R.id.detail_release_date);
         mVoteAvgView = (TextView) rootView.findViewById(R.id.detail_vote_average);
@@ -134,11 +137,18 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         if (data != null && data.moveToFirst()) {
             int movieId = data.getInt(COL_ID);
             long release_date = data.getLong(COL_RELEASE_DATE);
+            String vote_avg = data.getString(COL_VOTE_AVG);
             String titleText = data.getString(COL_TITLE);
-            mTitleView.setText(titleText);
             String synopsisText = data.getString(COL_SYNOPSIS);
-            mSynopsisView.setText(synopsisText);
             String voteAvgText = data.getString(COL_VOTE_AVG);
+            String poster_path = data.getString(COL_POSTER);
+
+            mTitleView.setText(titleText);
+            mSynopsisView.setText(synopsisText);
+            mReleaseDateView.setText("Released " + Long.toString(release_date));
+            mVoteAvgView.setText(vote_avg);
+
+            Picasso.with(getActivity()).load("http://image.tmdb.org/t/p/w185/"+poster_path).into(mIconView);
 
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareMovieIntent());

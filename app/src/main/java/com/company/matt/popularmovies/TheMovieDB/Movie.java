@@ -1,4 +1,4 @@
-package com.company.matt.popularmovies;
+package com.company.matt.popularmovies.TheMovieDB;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,21 +9,24 @@ public class Movie implements Parcelable {
     String release_date;
     String poster_path;
     String vote_average;
-    String overview;
     String synopsis;
+    String category;
 
     public Movie(String id,
                  String original_title,
                  String release_date,
                  String poster_path,
                  String vote_average,
-                 String overview){
+                 String synopsis,
+                 String category){
         this.id = id;
         this.original_title = original_title;
         this.release_date = release_date;
         this.poster_path = poster_path;
         this.vote_average = vote_average;
-        this.overview = overview;
+        this.synopsis = synopsis;
+        this.category = category;
+
     }
 
     public int describeContents() {
@@ -36,7 +39,7 @@ public class Movie implements Parcelable {
         out.writeString(release_date);
         out.writeString(poster_path);
         out.writeString(vote_average);
-        out.writeString(overview);
+        out.writeString(synopsis);
     }
 
     public static final Parcelable.Creator<Movie> CREATOR
@@ -56,7 +59,7 @@ public class Movie implements Parcelable {
         release_date = in.readString();
         poster_path = in.readString();
         vote_average = in.readString();
-        overview = in.readString();
+        synopsis = in.readString();
     }
 
     public String getOriginal_title() {
@@ -75,11 +78,15 @@ public class Movie implements Parcelable {
         return vote_average;
     }
 
-    public String getOverview() {
-        return overview;
+    public String getSynopsis() {
+        return synopsis;
     }
 
     public String getId() {
         return id;
+    }
+
+    public String getCategory() {
+        return category;
     }
 }
