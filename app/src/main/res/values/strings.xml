@@ -28,7 +28,7 @@
     <string name="pref_sort_order_rating" translatable="false">top_rated</string>
 
     <!-- Value in SharedPreferences for favorites [CHAR LIMIT=NONE] -->
-    <string name="pref_sort_order_favorites" translatable="false">favorites</string>
+    <string name="pref_sort_order_favorites" translatable="false">favorite</string>
 
     <!-- SyncAdapter related -->
     <string name="content_authority">com.company.matt.popularmovies</string>

@@ -116,7 +116,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             movieByCategoryUri = MovieContract.MovieEntry.buildMovieCategory(Constants.MDB_FAVORITE);
         }
         else {
-            movieByCategoryUri = MovieContract.MovieEntry.buildMovieCategory(Constants.MDB_POPULAR);
+            Log.d("Sort options error","Sort values didn't match");
         }
 
         return new CursorLoader(getActivity(),
