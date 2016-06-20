@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import com.company.matt.popularmovies.data.MovieContract;
 import com.company.matt.popularmovies.sync.MovieSyncAdapter;
 
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity implements MovieFragment.Callback  {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
@@ -48,7 +50,10 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
         super.onStart();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String sortValue = sharedPref.getString("sort", "");
-        setTitle("Movies by " + sortValue);
+        String[] values = getResources().getStringArray(R.array.pref_sort_order_values);
+        String[] options = getResources().getStringArray(R.array.pref_sort_order_options);
+        int index = Arrays.asList(values).indexOf(sortValue);
+        setTitle(options[index]);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {

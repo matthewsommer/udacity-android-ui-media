@@ -14,8 +14,6 @@ public class MDBClient {
     public static List<Movie> FetchMovies(String category) {
         String JsonResponseStr = null;
         Uri builtUri = null;
-        List<Movie> popularMovies = null;
-        List<Movie> topRatedMovies = null;
 
         builtUri = Uri.parse(Constants.MDB_BASE_URL).buildUpon()
                 .appendPath(category)
@@ -32,7 +30,7 @@ public class MDBClient {
         JsonResponseStr = Client.GetResponseStr(url);
 
         try {
-            return MDBUtility.getMovieDataFromJson(JsonResponseStr, Constants.MDB_TOP_RATED);
+            return MDBUtility.getMovieDataFromJson(JsonResponseStr, category);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();

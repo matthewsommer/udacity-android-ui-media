@@ -15,6 +15,7 @@ public class MovieProvider extends ContentProvider {
 
     static final int MOVIE = 100;
     static final int MOVIE_WITH_ID = 101;
+    static final int MOVIE_WITH_CATEGORY = 102;
 
     private static final SQLiteQueryBuilder sMovieQueryBuilder;
 
@@ -25,6 +26,9 @@ public class MovieProvider extends ContentProvider {
 
     private static final String sId =
             MovieContract.MovieEntry._ID + " = ?";
+
+    private static final String sCategory =
+            MovieContract.MovieEntry.COLUMN_CATEGORY + " = ?";
 
     private Cursor getById(
             Uri uri, String[] projection, String sortOrder) {
@@ -41,6 +45,34 @@ public class MovieProvider extends ContentProvider {
                 null,
                 sortOrder
         );
+    }
+
+    private Cursor getMovie(Uri uri, String[] projection, String sortOrder) {
+        String movieCategory = MovieContract.MovieEntry.getMovieCategoryFromUri(uri);
+
+        if(movieCategory != null) {
+            String selection = sCategory;
+            String[] selectionArgs = new String[]{movieCategory};
+
+            return sMovieQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null,
+                    null,
+                    sortOrder
+            );
+        }
+        else {
+            return sMovieQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                    projection,
+                    null,
+                    null,
+                    null,
+                    null,
+                    sortOrder
+            );
+        }
     }
 
     static UriMatcher buildUriMatcher() {
@@ -78,16 +110,9 @@ public class MovieProvider extends ContentProvider {
                 retCursor = getById(uri, projection, sortOrder);
                 break;
             }
+            // "movie"
             case MOVIE: {
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                        MovieContract.MovieEntry.TABLE_NAME,
-                        projection,
-                        selection,
-                        selectionArgs,
-                        null,
-                        null,
-                        sortOrder
-                );
+                retCursor = getMovie(uri, projection, sortOrder);
                 break;
             }
             default:

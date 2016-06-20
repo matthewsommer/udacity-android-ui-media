@@ -10,19 +10,25 @@
     <string name="pref_sort_order_label">Sort Order</string>
 
     <!-- Label for popularity [CHAR LIMIT=25] -->
-    <string name="pref_sort_order_label_popularity">Popularity</string>
+    <string name="pref_sort_order_label_popularity">Popular Movies</string>
 
     <!-- Label for rating [CHAR LIMIT=25] -->
-    <string name="pref_sort_order_label_rating">Rating</string>
+    <string name="pref_sort_order_label_rating">Highest Rated Movies</string>
+
+    <!-- Label for rating [CHAR LIMIT=25] -->
+    <string name="pref_sort_order_label_favorites">Favorite Movies</string>
 
     <!-- Key name for sort preference in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_sort_order_key" translatable="false">sort</string>
 
     <!-- Value in SharedPreferences for popularity [CHAR LIMIT=NONE] -->
-    <string name="pref_sort_order_popularity" translatable="false">popularity</string>
+    <string name="pref_sort_order_popularity" translatable="false">popular</string>
 
     <!-- Value in SharedPreferences for rating [CHAR LIMIT=NONE] -->
-    <string name="pref_sort_order_rating" translatable="false">rating</string>
+    <string name="pref_sort_order_rating" translatable="false">top_rated</string>
+
+    <!-- Value in SharedPreferences for favorites [CHAR LIMIT=NONE] -->
+    <string name="pref_sort_order_favorites" translatable="false">favorites</string>
 
     <!-- SyncAdapter related -->
     <string name="content_authority">com.company.matt.popularmovies</string>

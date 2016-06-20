@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -17,8 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-
+import com.company.matt.popularmovies.TheMovieDB.Constants;
 import com.company.matt.popularmovies.data.MovieContract;
+import com.company.matt.popularmovies.data.MovieProvider;
 import com.company.matt.popularmovies.sync.MovieSyncAdapter;
 
 public class MovieFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -35,12 +35,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry._ID,
             MovieContract.MovieEntry.COLUMN_TITLE,
-            MovieContract.MovieEntry.COLUMN_POSTER
+            MovieContract.MovieEntry.COLUMN_POSTER,
+            MovieContract.MovieEntry.COLUMN_CATEGORY
     };
 
     static final int COL_MOVIE_ID = 0;
     static final int COL_TITLE = 1;
     static final int COL_POSTER = 2;
+    static final int COL_CATEGORY = 3;
 
     public interface Callback {
         void selectFirstItem(Uri idUri);
@@ -88,17 +90,6 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
     public void onActivityCreated(Bundle savedInstanceState) {
         getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         super.onActivityCreated(savedInstanceState);
-        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
-    }
-
-    private void updateMovies() {
-        MovieSyncAdapter.syncImmediately(getActivity());
     }
 
     @Override
@@ -111,9 +102,25 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        Uri movieUri = MovieContract.MovieEntry.buildMovie();
+        Uri movieByCategoryUri = null;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sortValue = preferences.getString("sort", "");
+
+        if(sortValue.equalsIgnoreCase(Constants.MDB_POPULAR)) {
+            movieByCategoryUri = MovieContract.MovieEntry.buildMovieCategory(Constants.MDB_POPULAR);
+        }
+        else if (sortValue.equalsIgnoreCase(Constants.MDB_TOP_RATED)) {
+            movieByCategoryUri = MovieContract.MovieEntry.buildMovieCategory(Constants.MDB_TOP_RATED);
+        }
+        else if (sortValue.equalsIgnoreCase(Constants.MDB_FAVORITE)) {
+            movieByCategoryUri = MovieContract.MovieEntry.buildMovieCategory(Constants.MDB_FAVORITE);
+        }
+        else {
+            movieByCategoryUri = MovieContract.MovieEntry.buildMovieCategory(Constants.MDB_POPULAR);
+        }
+
         return new CursorLoader(getActivity(),
-                movieUri,
+                movieByCategoryUri,
                 MOVIE_COLUMNS,
                 null,
                 null,

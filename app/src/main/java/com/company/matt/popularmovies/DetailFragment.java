@@ -45,7 +45,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             MovieEntry.COLUMN_RELEASE_DATE,
             MovieEntry.COLUMN_POSTER,
             MovieEntry.COLUMN_VOTE_AVG,
-            MovieEntry.COLUMN_SYNOPSIS
+            MovieEntry.COLUMN_SYNOPSIS,
+            MovieEntry.COLUMN_CATEGORY
     };
 
     public static final int COL_ID = 0;
@@ -55,6 +56,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COL_POSTER = 4;
     public static final int COL_VOTE_AVG = 5;
     public static final int COL_SYNOPSIS = 6;
+    public static final int COL_CATEGORY = 7;
 
     private ImageView mIconView;
     private TextView mTitleView;
@@ -146,7 +148,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             mTitleView.setText(titleText);
             mSynopsisView.setText(synopsisText);
             mReleaseDateView.setText("Released " + Long.toString(release_date));
-            mVoteAvgView.setText(vote_avg);
+            mVoteAvgView.setText(voteAvgText);
 
             Picasso.with(getActivity()).load("http://image.tmdb.org/t/p/w185/"+poster_path).into(mIconView);
 

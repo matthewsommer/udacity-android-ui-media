@@ -71,8 +71,16 @@ public class MovieContract {
 
         public static Uri buildMovie() { return CONTENT_URI.buildUpon().build();}
 
+        public static Uri buildMovieCategory(String category) {
+            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_CATEGORY, category).build();
+        }
+
         public static String getMovieIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
+        }
+
+        public static String getMovieCategoryFromUri(Uri uri) {
+            return uri.getQueryParameter(COLUMN_CATEGORY);
         }
     }
 }

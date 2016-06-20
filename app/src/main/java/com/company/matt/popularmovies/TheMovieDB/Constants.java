@@ -5,6 +5,7 @@ public final class Constants  {
     public static final String MDB_BASE_URL = "http://api.themoviedb.org/3/movie";
     public static final String MDB_POPULAR = "popular";
     public static final String MDB_TOP_RATED = "top_rated";
+    public static final String MDB_FAVORITE = "favorite";
     public static final String APPID_PARAM = "api_key";
 
     public static final String MDB_RESULTS = "results";
