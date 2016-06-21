@@ -26,12 +26,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </FrameLayout>
-        <FrameLayout
+        <fragment
             android:id="@+id/videos_container"
-            android:name="com.company.matt.popularmovies.VideosFragment"
+            android:name="com.company.matt.popularmovies.VideoFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:layout="@android:layout/list_content">
-        </FrameLayout>
+        </fragment>
+        <fragment
+            android:id="@+id/reviews_container"
+            android:name="com.company.matt.popularmovies.ReviewFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@android:layout/list_content">
+        </fragment>
     </LinearLayout>
 </LinearLayout>

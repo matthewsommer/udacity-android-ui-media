@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.company.matt.popularmovies.TheMovieDB.Constants;
 import com.company.matt.popularmovies.TheMovieDB.Movie;
+import com.company.matt.popularmovies.TheMovieDB.Review;
 import com.company.matt.popularmovies.TheMovieDB.Video;
 import com.company.matt.popularmovies.data.MovieContract;
 import com.squareup.picasso.Picasso;
@@ -37,17 +38,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VideoFragment extends Fragment {
+public class ReviewFragment extends Fragment {
 
-    private VideoAdapter mVideoAdapter;
+    private ReviewAdapter mReviewAdapter;
     private String mMovieId;
     static final String MOVIE_ID = "MOVIE_ID";
 
-    public VideoFragment() {
-    }
-
-    public interface Callback {
-        void playVideo(String videoKey);
+    public ReviewFragment() {
     }
 
     @Override
@@ -66,25 +63,17 @@ public class VideoFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_videos, container, false);
 
-        mVideoAdapter = new VideoAdapter(getActivity(), new ArrayList<Video>());
+        mReviewAdapter = new ReviewAdapter(getActivity(), new ArrayList<Review>());
 
         GridView mGridView = (GridView) rootView.findViewById(R.id.gridview_videos);
-        mGridView.setAdapter(mVideoAdapter);
-
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Video video = mVideoAdapter.getItem(position);
-                ((Callback) getActivity()).playVideo(video.getKey());
-            }
-        });
+        mGridView.setAdapter(mReviewAdapter);
 
         return rootView;
     }
 
-    private void updateVideos() {
-        FetchVideosTask videosTask = new FetchVideosTask();
-        videosTask.execute();
+    private void updateReviews() {
+        FetchReviewsTask reviewsTask = new FetchReviewsTask();
+        reviewsTask.execute();
     }
 
     @Override
@@ -96,15 +85,15 @@ public class VideoFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateVideos();
+        updateReviews();
     }
 
 
-    public class FetchVideosTask extends AsyncTask<String, Void, List<Video>> {
+    public class FetchReviewsTask extends AsyncTask<String, Void, List<Review>> {
 
-        private final String LOG_TAG = FetchVideosTask.class.getSimpleName();
+        private final String LOG_TAG = FetchReviewsTask.class.getSimpleName();
 
-        private List<Video> getVideoDataFromJson(String jsonStr)
+        private List<Review> getVideoDataFromJson(String jsonStr)
                 throws JSONException {
 
             final String MDB_RESULTS = "results";
@@ -112,22 +101,21 @@ public class VideoFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(jsonStr);
             JSONArray jsonArray = jsonObject.getJSONArray(MDB_RESULTS);
 
-            List<Video> videos = new ArrayList<Video>();
+            List<Review> reviews = new ArrayList<Review>();
 
             for(int i = 0; i < jsonArray.length(); i++) {
                 jsonObject = jsonArray.getJSONObject(i);
 
-                Video video = new Video(jsonObject.getString(Constants.MDB_ID),
-                        jsonObject.getString(Constants.MDB_KEY),
-                        jsonObject.getString(Constants.MDB_NAME),
-                        jsonObject.getString(Constants.MDB_SITE));
-                videos.add(video);
+                Review review = new Review(jsonObject.getString(Constants.MDB_ID),
+                        jsonObject.getString(Constants.MDB_AUTHOR),
+                        jsonObject.getString(Constants.MDB_CONTENT));
+                reviews.add(review);
             }
-            return videos;
+            return reviews;
         }
 
         @Override
-        protected List<Video> doInBackground(String... params) {
+        protected List<Review> doInBackground(String... params) {
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
@@ -140,7 +128,7 @@ public class VideoFragment extends Fragment {
 
                 builtUri = Uri.parse(Constants.MDB_BASE_URL).buildUpon()
                         .appendPath(mMovieId)
-                        .appendPath("videos")
+                        .appendPath("reviews")
                         .appendQueryParameter(Constants.APPID_PARAM, BuildConfig.MOVIE_DB_API_KEY)
                         .build();
 
@@ -192,11 +180,11 @@ public class VideoFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(List<Video>  result) {
+        protected void onPostExecute(List<Review>  result) {
             if (result != null) {
-                mVideoAdapter.clear();
-                for(Video video : result) {
-                    mVideoAdapter.add(video);
+                mReviewAdapter.clear();
+                for(Review review : result) {
+                    mReviewAdapter.add(review);
                 }
             }
         }

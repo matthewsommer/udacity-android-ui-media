@@ -3,11 +3,10 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context="com.company.matt.popularmovies.VideoFragment">
-<ListView
-    android:id="@+id/listview_videos"
+<GridView
+    android:id="@+id/gridview_videos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:divider="@null"
-    android:numColumns="2" >
-</ListView>
+    android:numColumns="2" />
 </FrameLayout>

@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private static final String VIDEOSFRAGMENT_TAG = "VFTAG";
+    private static final String REVIEWSFRAGMENT_TAG = "RFTAG";
     private boolean mTwoPane;
     private Uri firstItemUri;
 
@@ -38,6 +39,11 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
                 VideoFragment vf = new VideoFragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.videos_container, vf, VIDEOSFRAGMENT_TAG)
+                        .commit();
+
+                ReviewFragment rf = new ReviewFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.reviews_container, rf, REVIEWSFRAGMENT_TAG)
                         .commit();
             }
         } else {
@@ -105,6 +111,13 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.videos_container, vf, VIDEOSFRAGMENT_TAG)
+                    .commit();
+
+            ReviewFragment rf = new ReviewFragment();
+            rf.setArguments(vfArguments);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.reviews_container, rf, REVIEWSFRAGMENT_TAG)
                     .commit();
         } else {
             Intent intnt = new Intent(this, DetailActivity.class).setData(contentUri);

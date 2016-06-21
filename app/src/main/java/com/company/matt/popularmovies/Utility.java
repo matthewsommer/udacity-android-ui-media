@@ -16,8 +16,11 @@ package com.company.matt.popularmovies;
  * limitations under the License.
  */
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import java.text.DateFormat;
@@ -27,6 +30,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+import android.util.AttributeSet;
+import android.widget.GridView;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
