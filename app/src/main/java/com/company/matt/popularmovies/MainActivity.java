@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
 
             Bundle vfArguments = new Bundle();
             vfArguments.putString(VideoFragment.MOVIE_ID, movieId);
-            
+
             VideoFragment vf = new VideoFragment();
             vf.setArguments(vfArguments);
 
