@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (findViewById(R.id.movie_detail_container) != null && (findViewById(R.id.videos_container)) != null) {
+        if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
             if (savedInstanceState == null) {
                 DetailFragment df = new DetailFragment();
@@ -97,7 +97,12 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
                     .replace(R.id.movie_detail_container, df, DETAILFRAGMENT_TAG)
                     .commit();
 
+            Bundle vfArguments = new Bundle();
+            vfArguments.putString(VideoFragment.MOVIE_ID, movieId);
+            
             VideoFragment vf = new VideoFragment();
+            vf.setArguments(vfArguments);
+
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.videos_container, vf, VIDEOSFRAGMENT_TAG)
                     .commit();
