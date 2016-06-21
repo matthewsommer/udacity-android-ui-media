@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.company.matt.popularmovies.data.MovieContract.MovieEntry;
 
 public class MovieDbHelper  extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 9;
 
     static final String DATABASE_NAME = "movies.db";
 
@@ -18,12 +18,13 @@ public class MovieDbHelper  extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         final String SQL_CREATE_WEATHER_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
                 MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL," +
+                MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE," +
                 MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_RELEASE_DATE + " INTEGER NOT NULL, " +
                 MovieEntry.COLUMN_POSTER + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_VOTE_AVG + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_SYNOPSIS + " TEXT NOT NULL, " +
+                MovieEntry.COLUMN_FAVORITED + " INTEGER NOT NULL, " +
                 MovieEntry.COLUMN_CATEGORY + " TEXT NOT NULL);";
         sqLiteDatabase.execSQL(SQL_CREATE_WEATHER_TABLE);
     }

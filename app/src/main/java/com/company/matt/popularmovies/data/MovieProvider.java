@@ -30,6 +30,9 @@ public class MovieProvider extends ContentProvider {
     private static final String sCategory =
             MovieContract.MovieEntry.COLUMN_CATEGORY + " = ?";
 
+    private static final String sFavorited =
+            MovieContract.MovieEntry.COLUMN_FAVORITED + " = ?";
+
     private Cursor getById(
             Uri uri, String[] projection, String sortOrder) {
         String movieId = MovieContract.MovieEntry.getMovieIdFromUri(uri);
@@ -49,30 +52,28 @@ public class MovieProvider extends ContentProvider {
 
     private Cursor getMovie(Uri uri, String[] projection, String sortOrder) {
         String movieCategory = MovieContract.MovieEntry.getMovieCategoryFromUri(uri);
+        String movieFavorited = MovieContract.MovieEntry.getMovieFavoritedFromUri(uri);
 
-        if(movieCategory != null) {
-            String selection = sCategory;
-            String[] selectionArgs = new String[]{movieCategory};
+        String selection = null;
+        String[] selectionArgs = null;
 
-            return sMovieQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                    projection,
-                    selection,
-                    selectionArgs,
-                    null,
-                    null,
-                    sortOrder
-            );
+        if(null != movieCategory) {
+            selection = sCategory;
+            selectionArgs = new String[]{movieCategory};
         }
-        else {
-            return sMovieQueryBuilder.query(mOpenHelper.getReadableDatabase(),
-                    projection,
-                    null,
-                    null,
-                    null,
-                    null,
-                    sortOrder
-            );
+        if(null != movieFavorited){
+            selection = sFavorited;
+            selectionArgs = new String[]{"1"};
         }
+
+        return sMovieQueryBuilder.query(mOpenHelper.getReadableDatabase(),
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
     }
 
     static UriMatcher buildUriMatcher() {

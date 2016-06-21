@@ -1,5 +1,6 @@
 package com.company.matt.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,9 +18,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.company.matt.popularmovies.TheMovieDB.Constants;
 import com.company.matt.popularmovies.data.MovieContract;
 import com.company.matt.popularmovies.data.MovieContract.MovieEntry;
 import com.squareup.picasso.Picasso;
@@ -46,7 +50,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             MovieEntry.COLUMN_POSTER,
             MovieEntry.COLUMN_VOTE_AVG,
             MovieEntry.COLUMN_SYNOPSIS,
-            MovieEntry.COLUMN_CATEGORY
+            MovieEntry.COLUMN_CATEGORY,
+            MovieEntry.COLUMN_FAVORITED
     };
 
     public static final int COL_ID = 0;
@@ -57,19 +62,22 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final int COL_VOTE_AVG = 5;
     public static final int COL_SYNOPSIS = 6;
     public static final int COL_CATEGORY = 7;
+    public static final int COL_FAVORITED = 8;
 
     private ImageView mIconView;
     private TextView mTitleView;
     private TextView mReleaseDateView;
     private TextView mVoteAvgView;
     private TextView mSynopsisView;
+    private CheckBox mFavoritedCheckBox;
+    private String rowId;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
         Bundle arguments = getArguments();
@@ -83,8 +91,30 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mReleaseDateView = (TextView) rootView.findViewById(R.id.detail_release_date);
         mVoteAvgView = (TextView) rootView.findViewById(R.id.detail_vote_average);
         mSynopsisView = (TextView) rootView.findViewById(R.id.detail_synopsis);
+        mFavoritedCheckBox = (CheckBox) rootView.findViewById(R.id.checkBox_Favorited);
+
 
         return rootView;
+    }
+
+    private void setCheckboxListener() {
+        mFavoritedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,
+                                         boolean isChecked) {
+                ContentValues mUpdateValues = new ContentValues();
+                mUpdateValues.put(MovieEntry._ID, rowId);
+                mUpdateValues.put(MovieEntry.COLUMN_FAVORITED, (isChecked) ? 1 : 0);
+
+                int mRowsUpdated = 0;
+
+                mRowsUpdated = getContext().getContentResolver().update(
+                        MovieEntry.CONTENT_URI, mUpdateValues, MovieEntry._ID + "= ?",
+                        new String[]{rowId});
+                Log.d("Rows updated",Integer.toString(mRowsUpdated));
+            }
+        });
     }
 
     @Override
@@ -144,6 +174,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String synopsisText = data.getString(COL_SYNOPSIS);
             String voteAvgText = data.getString(COL_VOTE_AVG);
             String poster_path = data.getString(COL_POSTER);
+            int favorited = data.getInt(COL_FAVORITED);
+            rowId = data.getString(COL_ID);
 
             mTitleView.setText(titleText);
             mSynopsisView.setText(synopsisText);
@@ -155,6 +187,15 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareMovieIntent());
             }
+            if(favorited == 1 && !mFavoritedCheckBox.isChecked()){
+                mFavoritedCheckBox.setOnCheckedChangeListener (null);
+                mFavoritedCheckBox.setChecked(true);
+            }
+            else if(favorited == 0 && mFavoritedCheckBox.isChecked()){
+                mFavoritedCheckBox.setOnCheckedChangeListener (null);
+                mFavoritedCheckBox.setChecked(false);
+            }
+            setCheckboxListener();
         }
     }
 

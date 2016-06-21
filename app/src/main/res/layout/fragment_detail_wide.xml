@@ -2,24 +2,38 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <ImageView
-        android:id="@+id/detail_icon"
-        android:layout_width="200dp"
-        android:layout_height="200dp"/>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="top">
+            <ImageView
+                android:id="@+id/detail_icon"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:contentDescription="@string/content_description"
+                android:layout_gravity="top"/>
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Favorite"
+                android:id="@+id/checkBox_Favorited"
+                android:layout_gravity="center" />
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
         <TextView android:layout_width="wrap_content"
             android:id="@+id/detail_title_textview"
             android:layout_height="wrap_content"
             android:text="Movie Title"
-            android:textSize="28dp"
+            android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/black" />
         <TextView android:layout_width="wrap_content"
@@ -35,6 +49,6 @@
             android:text="Synopsis"
             android:layout_height="wrap_content"
             android:paddingTop="10dp" />
-
+    </LinearLayout>
     </LinearLayout>
 </ScrollView>

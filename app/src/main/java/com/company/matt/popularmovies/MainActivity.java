@@ -53,7 +53,9 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
         String[] values = getResources().getStringArray(R.array.pref_sort_order_values);
         String[] options = getResources().getStringArray(R.array.pref_sort_order_options);
         int index = Arrays.asList(values).indexOf(sortValue);
-        setTitle(options[index]);
+        if(index != -1){
+            setTitle(options[index]);
+        }
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {

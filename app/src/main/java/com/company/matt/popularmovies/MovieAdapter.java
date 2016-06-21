@@ -6,7 +6,10 @@ import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+
+import com.company.matt.popularmovies.TheMovieDB.Constants;
 import com.squareup.picasso.Picasso;
 
 public class MovieAdapter extends CursorAdapter {
@@ -14,6 +17,7 @@ public class MovieAdapter extends CursorAdapter {
 
     public static class ViewHolder {
         public final ImageView iconView;
+
         public ViewHolder(View view) {
             iconView = (ImageView) view.findViewById(R.id.list_item_icon);
         }

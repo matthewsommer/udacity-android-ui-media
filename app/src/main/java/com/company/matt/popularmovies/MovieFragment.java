@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import com.company.matt.popularmovies.TheMovieDB.Constants;
 import com.company.matt.popularmovies.data.MovieContract;
@@ -113,7 +114,7 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             movieByCategoryUri = MovieContract.MovieEntry.buildMovieCategory(Constants.MDB_TOP_RATED);
         }
         else if (sortValue.equalsIgnoreCase(Constants.MDB_FAVORITE)) {
-            movieByCategoryUri = MovieContract.MovieEntry.buildMovieCategory(Constants.MDB_FAVORITE);
+            movieByCategoryUri = MovieContract.MovieEntry.buildMovieFavorited();
         }
         else {
             Log.d("Sort options error","Sort values didn't match");
@@ -133,6 +134,13 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
         mMovieAdapter.swapCursor(data);
         if (mPosition != GridView.INVALID_POSITION) {
             mGridView.smoothScrollToPosition(mPosition);
+            final String movieId = data.getString(COL_MOVIE_ID);
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    ((Callback) getActivity()).selectFirstItem(MovieContract.MovieEntry.buildMovieWithId(movieId));
+                }
+            });
         }
         else {
             if(data.getCount() > 0 && data.moveToFirst()) {

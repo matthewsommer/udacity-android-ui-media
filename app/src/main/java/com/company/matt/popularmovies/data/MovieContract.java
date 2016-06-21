@@ -59,6 +59,7 @@ public class MovieContract {
         public static final String COLUMN_VOTE_AVG = "vote_avg";
         public static final String COLUMN_SYNOPSIS = "synopsis";
         public static final String COLUMN_CATEGORY = "category";
+        public static final String COLUMN_FAVORITED = "favorited";
 
         public static Uri buildMovieUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
@@ -74,6 +75,9 @@ public class MovieContract {
         public static Uri buildMovieCategory(String category) {
             return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_CATEGORY, category).build();
         }
+        public static Uri buildMovieFavorited() {
+            return CONTENT_URI.buildUpon().appendQueryParameter(COLUMN_FAVORITED, "true").build();
+        }
 
         public static String getMovieIdFromUri(Uri uri) {
             return uri.getPathSegments().get(1);
@@ -81,6 +85,9 @@ public class MovieContract {
 
         public static String getMovieCategoryFromUri(Uri uri) {
             return uri.getQueryParameter(COLUMN_CATEGORY);
+        }
+        public static String getMovieFavoritedFromUri(Uri uri) {
+            return uri.getQueryParameter(COLUMN_FAVORITED);
         }
     }
 }

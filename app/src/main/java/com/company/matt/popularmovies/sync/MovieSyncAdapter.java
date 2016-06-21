@@ -58,6 +58,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
             movieValues.put(MovieContract.MovieEntry.COLUMN_POSTER, movie.getPoster_path());
             movieValues.put(MovieContract.MovieEntry.COLUMN_TITLE, movie.getOriginal_title());
             movieValues.put(MovieContract.MovieEntry.COLUMN_CATEGORY, movie.getCategory());
+            movieValues.put(MovieContract.MovieEntry.COLUMN_FAVORITED,0);
 
             cVVector.add(movieValues);
         }
@@ -67,9 +68,9 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void AddVectorToDB(Vector<ContentValues> cVVector) {
-        getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
-                null,
-                null);
+//        getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+//                null,
+//                null);
 
         if ( cVVector.size() > 0 ) {
             ContentValues[] cvArray = new ContentValues[cVVector.size()];

@@ -5,12 +5,12 @@
     android:gravity="center_vertical|center_horizontal"
     android:orientation="horizontal"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:padding="10dp"
+    android:padding="5dp"
     android:background="@drawable/touch_selector">
 
     <ImageView
         android:id="@+id/list_item_icon"
-        android:layout_width="185dp"
-        android:layout_height="185dp"/>
+        android:layout_width="225dp"
+        android:layout_height="225dp"/>
 
 </LinearLayout>
