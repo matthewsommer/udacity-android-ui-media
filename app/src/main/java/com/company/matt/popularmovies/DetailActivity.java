@@ -18,14 +18,25 @@ public class DetailActivity extends AppCompatActivity{
         setContentView(R.layout.activity_detail);
 
         if (savedInstanceState == null) {
-            Bundle arguments = new Bundle();
-            arguments.putParcelable(DetailFragment.DETAIL_URI, getIntent().getData());
+            Bundle moviearguments = new Bundle();
+            moviearguments.putParcelable(DetailFragment.DETAIL_URI, getIntent().getData());
 
-            DetailFragment fragment = new DetailFragment();
-            fragment.setArguments(arguments);
+            DetailFragment df = new DetailFragment();
+            df.setArguments(moviearguments);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_detail_container, fragment)
+                    .add(R.id.movie_detail_container, df)
+                    .commit();
+
+            Bundle vfArguments = new Bundle();
+
+            vfArguments.putString(VideoFragment.MOVIE_ID, getIntent().getStringExtra(VideoFragment.MOVIE_ID));
+
+            VideoFragment vf = new VideoFragment();
+            vf.setArguments(vfArguments);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.videos_container, vf)
                     .commit();
         }
     }

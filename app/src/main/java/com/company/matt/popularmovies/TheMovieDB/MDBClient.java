@@ -37,4 +37,59 @@ public class MDBClient {
         }
         return null;
     }
+    public static List<Video> FetchMovieVideos(String movieId) {
+        String JsonResponseStr = null;
+        Uri builtUri = null;
+
+        builtUri = Uri.parse(Constants.MDB_BASE_URL).buildUpon()
+                .appendPath(movieId)
+                .appendPath("videos")
+                .appendQueryParameter(Constants.APPID_PARAM, BuildConfig.MOVIE_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        JsonResponseStr = Client.GetResponseStr(url);
+
+        try {
+            return MDBUtility.getVideoDataFromJson(JsonResponseStr);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<Review> FetchMovieReviews(String movieId) {
+        String JsonResponseStr = null;
+        Uri builtUri = null;
+
+        builtUri = Uri.parse(Constants.MDB_BASE_URL).buildUpon()
+                .appendPath(movieId)
+                .appendPath("reviews")
+                .appendQueryParameter(Constants.APPID_PARAM, BuildConfig.MOVIE_DB_API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        JsonResponseStr = Client.GetResponseStr(url);
+
+        try {
+            return MDBUtility.getReviewDataFromJson(JsonResponseStr);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

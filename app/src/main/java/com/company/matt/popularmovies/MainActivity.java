@@ -18,6 +18,7 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity implements MovieFragment.Callback  {
     private final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
+    private static final String VIDEOSFRAGMENT_TAG = "VFTAG";
     private boolean mTwoPane;
     private Uri firstItemUri;
 
@@ -26,12 +27,17 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (findViewById(R.id.movie_detail_container) != null) {
+        if (findViewById(R.id.movie_detail_container) != null && (findViewById(R.id.videos_container)) != null) {
             mTwoPane = true;
             if (savedInstanceState == null) {
                 DetailFragment df = new DetailFragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_detail_container, df, DETAILFRAGMENT_TAG)
+                        .commit();
+
+                VideoFragment vf = new VideoFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.videos_container, vf, VIDEOSFRAGMENT_TAG)
                         .commit();
             }
         } else {
@@ -72,13 +78,14 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void selectFirstItem(Uri contentUri) {
+    @Override public void selectFirstItem(String id, String movieId) {
         if(mTwoPane) {
-            onItemSelected(contentUri);
+            onItemSelected(id,movieId);
         }
     }
 
-    @Override public void onItemSelected(Uri contentUri) {
+    @Override public void onItemSelected(String id, String movieId) {
+        Uri contentUri = MovieContract.MovieEntry.buildMovieWithId(id);
         if (mTwoPane) {
             Bundle args = new Bundle();
             args.putParcelable(DetailFragment.DETAIL_URI, contentUri);
@@ -89,8 +96,14 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.movie_detail_container, df, DETAILFRAGMENT_TAG)
                     .commit();
+
+            VideoFragment vf = new VideoFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.videos_container, vf, VIDEOSFRAGMENT_TAG)
+                    .commit();
         } else {
             Intent intnt = new Intent(this, DetailActivity.class).setData(contentUri);
+            intnt.putExtra(VideoFragment.MOVIE_ID, movieId);
             startActivity(intnt);
         }
     }

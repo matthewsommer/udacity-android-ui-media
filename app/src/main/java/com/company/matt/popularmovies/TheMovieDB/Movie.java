@@ -3,6 +3,8 @@ package com.company.matt.popularmovies.TheMovieDB;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 public class Movie implements Parcelable {
     String id;
     String original_title;
@@ -26,7 +28,6 @@ public class Movie implements Parcelable {
         this.vote_average = vote_average;
         this.synopsis = synopsis;
         this.category = category;
-
     }
 
     public int describeContents() {

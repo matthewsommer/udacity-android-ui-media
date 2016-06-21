@@ -49,6 +49,18 @@
             android:text="Synopsis"
             android:layout_height="wrap_content"
             android:paddingTop="10dp" />
+        <FrameLayout
+            android:id="@+id/videos_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4" >
+            <ListView
+                android:id="@+id/listview_videos"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:numColumns="2" />
+        </FrameLayout>
     </LinearLayout>
     </LinearLayout>
 </ScrollView>

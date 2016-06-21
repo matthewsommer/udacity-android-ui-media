@@ -21,12 +21,19 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.company.matt.popularmovies.TheMovieDB.Constants;
+import com.company.matt.popularmovies.TheMovieDB.MDBClient;
+import com.company.matt.popularmovies.TheMovieDB.Movie;
+import com.company.matt.popularmovies.TheMovieDB.Review;
+import com.company.matt.popularmovies.TheMovieDB.Video;
 import com.company.matt.popularmovies.data.MovieContract;
 import com.company.matt.popularmovies.data.MovieContract.MovieEntry;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
@@ -35,7 +42,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static final String FORECAST_SHARE_HASHTAG = " #MovieApp";
 
     private ShareActionProvider mShareActionProvider;
-    private String mMovies;
     private Uri mUri;
 
     public String firstMovieId = "42";
@@ -71,6 +77,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mSynopsisView;
     private CheckBox mFavoritedCheckBox;
     private String rowId;
+    private List<Video> videos;
+    private List<Review> reviews;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -93,7 +101,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         mSynopsisView = (TextView) rootView.findViewById(R.id.detail_synopsis);
         mFavoritedCheckBox = (CheckBox) rootView.findViewById(R.id.checkBox_Favorited);
 
-
         return rootView;
     }
 
@@ -115,31 +122,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 Log.d("Rows updated",Integer.toString(mRowsUpdated));
             }
         });
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        inflater.inflate(R.menu.detailfragment, menu);
-
-        // Retrieve the share menu item
-        MenuItem menuItem = menu.findItem(R.id.action_share);
-
-        // Get the provider and hold onto it to set/change the share intent.
-        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
-
-        // If onLoadFinished happens before this, we can go ahead and set the share intent now.
-        if (mMovies != null) {
-            mShareActionProvider.setShareIntent(createShareMovieIntent());
-        }
-    }
-
-    private Intent createShareMovieIntent() {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, mMovies + FORECAST_SHARE_HASHTAG);
-        return shareIntent;
     }
 
     @Override
@@ -167,7 +149,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d("onLoadFinished", Integer.toString(data.getCount()));
         if (data != null && data.moveToFirst()) {
-            int movieId = data.getInt(COL_ID);
+            int Id = data.getInt(COL_ID);
+            String movieId = data.getString(COL_MOVIE_ID);
             long release_date = data.getLong(COL_RELEASE_DATE);
             String vote_avg = data.getString(COL_VOTE_AVG);
             String titleText = data.getString(COL_TITLE);
@@ -175,18 +158,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             String voteAvgText = data.getString(COL_VOTE_AVG);
             String poster_path = data.getString(COL_POSTER);
             int favorited = data.getInt(COL_FAVORITED);
-            rowId = data.getString(COL_ID);
 
             mTitleView.setText(titleText);
             mSynopsisView.setText(synopsisText);
             mReleaseDateView.setText("Released " + Long.toString(release_date));
-            mVoteAvgView.setText(voteAvgText);
+            mVoteAvgView.setText("Average Rating " + voteAvgText);
 
             Picasso.with(getActivity()).load("http://image.tmdb.org/t/p/w185/"+poster_path).into(mIconView);
 
-            if (mShareActionProvider != null) {
-                mShareActionProvider.setShareIntent(createShareMovieIntent());
-            }
             if(favorited == 1 && !mFavoritedCheckBox.isChecked()){
                 mFavoritedCheckBox.setOnCheckedChangeListener (null);
                 mFavoritedCheckBox.setChecked(true);

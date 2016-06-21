@@ -35,19 +35,21 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     private static final String[] MOVIE_COLUMNS = {
             MovieContract.MovieEntry._ID,
+            MovieContract.MovieEntry.COLUMN_MOVIE_ID,
             MovieContract.MovieEntry.COLUMN_TITLE,
             MovieContract.MovieEntry.COLUMN_POSTER,
             MovieContract.MovieEntry.COLUMN_CATEGORY
     };
 
-    static final int COL_MOVIE_ID = 0;
-    static final int COL_TITLE = 1;
-    static final int COL_POSTER = 2;
-    static final int COL_CATEGORY = 3;
+    static final int COL_ID = 0;
+    static final int COL_MOVIE_ID = 1;
+    static final int COL_TITLE = 2;
+    static final int COL_POSTER = 3;
+    static final int COL_CATEGORY = 4;
 
     public interface Callback {
-        void selectFirstItem(Uri idUri);
-        void onItemSelected(Uri idUri);
+        void selectFirstItem(String id, String movieId);
+        void onItemSelected(String id, String movieId);
     }
 
     public MovieFragment() { }
@@ -74,8 +76,10 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null) {
+                    String id = cursor.getString(COL_ID);
+                    String movieId = cursor.getString(COL_MOVIE_ID);
                     ((Callback) getActivity())
-                            .onItemSelected(MovieContract.MovieEntry.buildMovieWithId(cursor.getString(COL_MOVIE_ID)));
+                            .onItemSelected(id,movieId);
                 }
                 mPosition = position;
             }
@@ -130,25 +134,18 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(LOG_TAG,Thread.currentThread().getStackTrace()[2].getMethodName());
         mMovieAdapter.swapCursor(data);
         if (mPosition != GridView.INVALID_POSITION) {
             mGridView.smoothScrollToPosition(mPosition);
-            final String movieId = data.getString(COL_MOVIE_ID);
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    ((Callback) getActivity()).selectFirstItem(MovieContract.MovieEntry.buildMovieWithId(movieId));
-                }
-            });
         }
         else {
             if(data.getCount() > 0 && data.moveToFirst()) {
+                final String firstId = data.getString(COL_ID);
                 final String firstMovieID = data.getString(COL_MOVIE_ID);
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        ((Callback) getActivity()).selectFirstItem(MovieContract.MovieEntry.buildMovieWithId(firstMovieID));
+                        ((Callback) getActivity()).selectFirstItem(firstId,firstMovieID);
                     }
                 });
             }
