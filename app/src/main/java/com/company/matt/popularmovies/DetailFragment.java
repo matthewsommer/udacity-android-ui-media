@@ -1,7 +1,6 @@
 package com.company.matt.popularmovies;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,31 +8,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-
-import com.company.matt.popularmovies.TheMovieDB.Constants;
-import com.company.matt.popularmovies.TheMovieDB.MDBClient;
-import com.company.matt.popularmovies.TheMovieDB.Movie;
-import com.company.matt.popularmovies.TheMovieDB.Review;
-import com.company.matt.popularmovies.TheMovieDB.Video;
-import com.company.matt.popularmovies.data.MovieContract;
 import com.company.matt.popularmovies.data.MovieContract.MovieEntry;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = DetailFragment.class.getSimpleName();
@@ -44,7 +29,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private ShareActionProvider mShareActionProvider;
     private Uri mUri;
 
-    public String firstMovieId = "42";
+    public String firstMovieId;
+    private String Id;
+    private String movieId;
 
     private static final int DETAIL_LOADER = 0;
 
@@ -76,9 +63,6 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView mVoteAvgView;
     private TextView mSynopsisView;
     private CheckBox mFavoritedCheckBox;
-    private String rowId;
-    private List<Video> videos;
-    private List<Review> reviews;
 
     public DetailFragment() {
         setHasOptionsMenu(true);
@@ -111,14 +95,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             public void onCheckedChanged(CompoundButton buttonView,
                                          boolean isChecked) {
                 ContentValues mUpdateValues = new ContentValues();
-                mUpdateValues.put(MovieEntry._ID, rowId);
+                mUpdateValues.put(MovieEntry._ID, Id);
                 mUpdateValues.put(MovieEntry.COLUMN_FAVORITED, (isChecked) ? 1 : 0);
 
                 int mRowsUpdated = 0;
 
                 mRowsUpdated = getContext().getContentResolver().update(
                         MovieEntry.CONTENT_URI, mUpdateValues, MovieEntry._ID + "= ?",
-                        new String[]{rowId});
+                        new String[]{Id});
                 Log.d("Rows updated",Integer.toString(mRowsUpdated));
             }
         });
@@ -149,8 +133,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.d("onLoadFinished", Integer.toString(data.getCount()));
         if (data != null && data.moveToFirst()) {
-            int Id = data.getInt(COL_ID);
-            String movieId = data.getString(COL_MOVIE_ID);
+            Id = data.getString(COL_ID);
+            movieId = data.getString(COL_MOVIE_ID);
             long release_date = data.getLong(COL_RELEASE_DATE);
             String vote_avg = data.getString(COL_VOTE_AVG);
             String titleText = data.getString(COL_TITLE);

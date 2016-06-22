@@ -1,5 +1,6 @@
 package com.company.matt.popularmovies;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -34,16 +35,6 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Cal
                 DetailFragment df = new DetailFragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.movie_detail_container, df, DETAILFRAGMENT_TAG)
-                        .commit();
-
-                VideoFragment vf = new VideoFragment();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.videos_container, vf, VIDEOSFRAGMENT_TAG)
-                        .commit();
-
-                ReviewFragment rf = new ReviewFragment();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.reviews_container, rf, REVIEWSFRAGMENT_TAG)
                         .commit();
             }
         } else {

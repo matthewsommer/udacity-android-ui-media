@@ -56,16 +56,19 @@ public class ReviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        View rootView = inflater.inflate(R.layout.fragment_reviews, container, false);
+
         Bundle arguments = getArguments();
         if (arguments != null) {
             mMovieId = arguments.getString(VideoFragment.MOVIE_ID);
         }
-
-        View rootView = inflater.inflate(R.layout.fragment_videos, container, false);
+        else {
+            return rootView;
+        }
 
         mReviewAdapter = new ReviewAdapter(getActivity(), new ArrayList<Review>());
 
-        GridView mGridView = (GridView) rootView.findViewById(R.id.gridview_videos);
+        GridView mGridView = (GridView) rootView.findViewById(R.id.gridview_reviews);
         mGridView.setAdapter(mReviewAdapter);
 
         return rootView;

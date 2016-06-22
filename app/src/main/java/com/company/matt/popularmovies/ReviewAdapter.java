@@ -39,7 +39,8 @@ public class ReviewAdapter  extends ArrayAdapter<Review> {
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_review, parent, false);
-            ((TextView) convertView.findViewById(R.id.list_item_review)).setText(review.getAuthor());
+            ((TextView) convertView.findViewById(R.id.list_item_review_author)).setText(review.getAuthor());
+            ((TextView) convertView.findViewById(R.id.list_item_review_content)).setText(review.getContent());
         }
 
         return convertView;

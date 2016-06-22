@@ -1,18 +1,12 @@
 package com.company.matt.popularmovies;
 
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
-public class DetailActivity extends AppCompatActivity implements VideoFragment.Callback{
+public class DetailActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +57,5 @@ public class DetailActivity extends AppCompatActivity implements VideoFragment.C
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void playVideo(String videoKey) {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + videoKey));
-            startActivity(intent);
-        } catch (ActivityNotFoundException ex) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + videoKey));
-            startActivity(intent);
-        }
     }
 }

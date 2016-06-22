@@ -1,22 +1,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
-    tools:context="com.company.matt.popularmovies.VideoFragment"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="20dp"
+    tools:context="com.company.matt.popularmovies.ReviewFragment"
     android:orientation="vertical">
     <TextView
-        android:text="@string/title_videos"
+        android:text="@string/title_reviews"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:textSize="26sp"
         android:textColor="@android:color/black" />
     <GridView
-        android:id="@+id/gridview_videos"
-        android:layout_width="match_parent"
+        android:id="@+id/gridview_reviews"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:divider="@null"
-        android:numColumns="3"
-        android:padding="5dp" />
+        android:numColumns="1" />
 </LinearLayout>

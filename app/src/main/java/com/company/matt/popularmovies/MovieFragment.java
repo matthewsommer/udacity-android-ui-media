@@ -124,12 +124,14 @@ public class MovieFragment extends Fragment implements LoaderManager.LoaderCallb
             Log.d("Sort options error","Sort values didn't match");
         }
 
+        String sortOrder = MovieContract.MovieEntry.COLUMN_TITLE + " ASC";
+
         return new CursorLoader(getActivity(),
                 movieByCategoryUri,
                 MOVIE_COLUMNS,
                 null,
                 null,
-                null);
+                sortOrder);
     }
 
     @Override

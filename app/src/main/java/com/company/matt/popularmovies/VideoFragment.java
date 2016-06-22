@@ -1,5 +1,6 @@
 package com.company.matt.popularmovies;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -75,7 +76,15 @@ public class VideoFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Video video = mVideoAdapter.getItem(position);
-                ((Callback) getActivity()).playVideo(video.getKey());
+
+                Activity current_activity = getActivity();
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + video.getKey()));
+                    startActivity(intent);
+                } catch (ActivityNotFoundException ex) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" + video.getKey()));
+                    startActivity(intent);
+                }
             }
         });
 

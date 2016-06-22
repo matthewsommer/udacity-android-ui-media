@@ -1,78 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
     <LinearLayout
-        android:layout_width="match_parent"
+        android:gravity="center_vertical"
+        android:layout_gravity="start"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:padding="10dp">
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="top">
             <ImageView
                 android:id="@+id/detail_icon"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="145dp"
+                android:layout_height="185dp"
                 android:contentDescription="@string/content_description"
                 android:layout_gravity="top"/>
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Favorite"
+                android:text="@string/label_favorite"
                 android:id="@+id/checkBox_Favorited"
                 android:layout_gravity="center" />
         </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView android:layout_width="wrap_content"
-            android:id="@+id/detail_title_textview"
-            android:layout_height="wrap_content"
-            android:text="Movie Title"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black" />
-        <TextView android:layout_width="wrap_content"
-            android:id="@+id/detail_release_date"
-            android:text="Release Date"
-            android:layout_height="wrap_content" />
-        <TextView android:layout_width="wrap_content"
-            android:id="@+id/detail_vote_average"
-            android:text="Vote Average"
-            android:layout_height="wrap_content" />
-        <TextView android:layout_width="wrap_content"
-            android:id="@+id/detail_synopsis"
-            android:text="Synopsis"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp" />
-        <FrameLayout
-            android:id="@+id/videos_container"
+
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4" >
-            <ListView
-                android:id="@+id/listview_videos"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="top">
+            <TextView android:layout_width="wrap_content"
+                android:id="@+id/detail_title_textview"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="26sp"
+                android:textColor="@android:color/black" />
+            <TextView android:layout_width="wrap_content"
+                android:id="@+id/detail_release_date"
+                android:layout_height="wrap_content" />
+            <TextView android:layout_width="wrap_content"
+                android:id="@+id/detail_vote_average"
+                android:layout_height="wrap_content" />
+            <TextView android:layout_width="wrap_content"
+                android:id="@+id/detail_synopsis"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp" />
+            <fragment
+                android:id="@+id/videos_container"
+                android:name="com.company.matt.popularmovies.VideoFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@null"
-                android:numColumns="2" />
-        </FrameLayout>
-        <FrameLayout
-            android:id="@+id/reviews_container"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4" >
-            <ListView
-                android:id="@+id/listview_reviews"
+                android:layout_height="wrap_content"
+                tools:layout="@android:layout/list_content">
+            </fragment>
+            <fragment
+                android:id="@+id/reviews_container"
+                android:name="com.company.matt.popularmovies.ReviewFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@null"
-                android:numColumns="2" />
-        </FrameLayout>
-    </LinearLayout>
+                android:layout_height="wrap_content"
+                tools:layout="@android:layout/list_content">
+            </fragment>
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

@@ -68,9 +68,13 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void AddVectorToDB(Vector<ContentValues> cVVector) {
-//        getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
-//                null,
-//                null);
+
+        String sFavorited = MovieContract.MovieEntry.COLUMN_FAVORITED + " = ?";
+        String[] selectionArgs = new String[]{"0"};
+
+        getContext().getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                sFavorited,
+                selectionArgs);
 
         if ( cVVector.size() > 0 ) {
             ContentValues[] cvArray = new ContentValues[cVVector.size()];
